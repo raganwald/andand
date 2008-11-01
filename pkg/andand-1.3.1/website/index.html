@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" href="stylesheets/screen.css" type="text/css" media="screen" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>
+      Object#andand
+  </title>
+  <script src="javascripts/rounded_corners_lite.inc.js" type="text/javascript"></script>
+<style>
+
+</style>
+  <script type="text/javascript">
+    window.onload = function() {
+      settings = {
+          tl: { radius: 10 },
+          tr: { radius: 10 },
+          bl: { radius: 10 },
+          br: { radius: 10 },
+          antiAlias: true,
+          autoPad: true,
+          validTags: ["div"]
+      }
+      var versionBox = new curvyCorners(settings, document.getElementById("version"));
+      versionBox.applyCornersToAll();
+    }
+  </script>
+</head>
+<body>
+<div id="main">
+
+    <h1>Object#andand</h1>
+    <div id="version" class="clickable" onclick='document.location = "http://rubyforge.org/projects/andand"; return false'>
+      <p>Get Version</p>
+      <a href="http://rubyforge.org/projects/andand" class="numbers">1.3.1</a>
+    </div>
+    <h1>&#x2192; &#8216;andand&#8217;</h1>
+
+
+	<h2>What</h2>
+
+
+	<p><em>Object#andand</em> lets us write:</p>
+
+
+	<p><pre class='syntax'>
+<span class="attribute">@phone</span> <span class="punct">=</span> <span class="constant">Location</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">,</span> <span class="punct">...</span><span class="ident">elided</span><span class="punct">...</span> <span class="punct">).</span><span class="ident">andand</span><span class="punct">.</span><span class="ident">phone</span>
+</pre>And get a <em>guarded method invocation</em> or <em>safe navigation method</em>. This snippet performs a <code>.find</code> on the Location class, then sends <code>.phone</code> to the result <em>if the result is not nil</em>. If the result is nil, then the expression returns nil without throwing a NoMethodError.</p>
+
+
+	<p>As Dejan Simic <a href="http://rors.org/2008/3/18/andand">put it</a>:</p>
+
+
+	<p>Why would you want to write this:</p>
+
+
+	<p><pre class='syntax'>
+<span class="ident">entry</span><span class="punct">.</span><span class="ident">at</span><span class="punct">('</span><span class="string">description</span><span class="punct">')</span> <span class="punct">&amp;&amp;</span> <span class="ident">entry</span><span class="punct">.</span><span class="ident">at</span><span class="punct">('</span><span class="string">description</span><span class="punct">').</span><span class="ident">inner_text</span>
+</pre>when you can write this:</p>
+
+
+	<p><pre class='syntax'>
+<span class="ident">entry</span><span class="punct">.</span><span class="ident">at</span><span class="punct">('</span><span class="string">description</span><span class="punct">').</span><span class="ident">andand</span><span class="punct">.</span><span class="ident">inner_text</span>
+</pre>Why indeed! As a bonus, install andand and you will also receive an enhanced Object#tap method, <em>at no extra charge</em>!</p>
+
+
+	<h2>Installing</h2>
+
+
+	<p><pre class='syntax'><span class="ident">sudo</span> <span class="ident">gem</span> <span class="ident">install</span> <span class="ident">andand</span></pre></p>
+
+
+	<h2>The basics</h2>
+
+
+	<h3>Object#andand</h3>
+
+
+	<p>Ruby programmers are familiar with the two <em>guarded assignment</em> operators <code>&#38;&#38;=</code> and <code>||=</code>. The typical use for them is when you have a variable that might be nil. For example:</p>
+
+
+	<p><pre class='syntax'>
+<span class="ident">first_name</span> <span class="punct">&amp;&amp;=</span> <span class="attribute">@first_name</span><span class="punct">.</span><span class="ident">trim</span>
+<span class="attribute">@phone</span> <span class="punct">||=</span> <span class="punct">'</span><span class="string">612-777-9311</span><span class="punct">'</span>
+</pre>You are trimming the first name provided it isn’t nil, and you are assigning ‘612-777-9311’ to the phone if it <em>is</em> nil (or false, but that isn’t important right now). The other day we were discussing the guards and we agreed that we wished there was a <em>guarded method invocation</em> operator. Here’s an example of when you would use it:</p>
+
+
+	<p><pre class='syntax'>
+<span class="attribute">@phone</span> <span class="punct">=</span> <span class="constant">Location</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">,</span> <span class="punct">...</span><span class="ident">elided</span><span class="punct">...</span> <span class="punct">)&amp;&amp;.</span><span class="ident">phone</span>
+</pre>Meaning, search the location table for the first record matching some criteria, and if you find a location, get its phone. If you don’t, get nil. (Groovy provides this exact functionality, although Groovy uses <code>?.</code> instead of <code>&#38;&#38;.</code>) However, <code>&#38;&#38;.</code> won’t work because <code>&#38;&#38;.</code> is not a real Ruby operator.</p>
+
+
+	<p>Object#andand let&rsquo;s us write:</p>
+
+
+	<p><pre class='syntax'>
+<span class="attribute">@phone</span> <span class="punct">=</span> <span class="constant">Location</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">,</span> <span class="punct">...</span><span class="ident">elided</span><span class="punct">...</span> <span class="punct">).</span><span class="ident">andand</span><span class="punct">.</span><span class="ident">phone</span>
+</pre>And get the same effect as:</p>
+
+
+	<p><pre class='syntax'>
+<span class="attribute">@phone</span> <span class="punct">=</span> <span class="punct">-&gt;(</span><span class="ident">loc</span><span class="punct">){</span> <span class="ident">loc</span> <span class="punct">&amp;&amp;</span> <span class="ident">loc</span><span class="punct">.</span><span class="ident">phone</span> <span class="punct">}.</span><span class="ident">call</span><span class="punct">(</span><span class="constant">Location</span><span class="punct">.</span><span class="ident">find</span><span class="punct">(</span><span class="symbol">:first</span><span class="punct">,</span> <span class="punct">...</span><span class="ident">elided</span><span class="punct">...</span> <span class="punct">))</span>
+</pre>Note that because you accept any method using Ruby’s method invocation syntax, you can accept methods with parameters and/or blocks:</p>
+
+
+	<p><pre class='syntax'>
+<span class="ident">list_of_lists</span><span class="punct">.</span><span class="ident">detect</span> <span class="punct">{</span> <span class="punct">...</span><span class="ident">elided</span><span class="punct">...</span> <span class="punct">}.</span><span class="ident">andand</span><span class="punct">.</span><span class="ident">inject</span><span class="punct">(</span><span class="number">42</span><span class="punct">)</span> <span class="punct">{</span> <span class="punct">...</span><span class="ident">elided</span> <span class="punct">...</span> <span class="punct">}</span>
+</pre>Object#andand emphasizes syntactic regularity: the goal was to make an <code>&#38;&#38;.</code> operation that worked like <code>&#38;&#38;=</code>. <code>&#38;&#38;=</code> looks just like normal assignment, you can use any expression on the <span class="caps">RHS</span>, only the semantics are different. The andand method also works just like a normal method invocation, only the semantics are modified.</p>
+
+
+	<h3>Use andand to simplify your regular expression matching and extraction</h3>
+
+
+	<p>Do you ever find yourself wanting to extract a single value from a string using a regular expression? For example, Ruby&#8217;s Tempfile class creates paths to files that end in .pid.n (where pid is your process id and n is some number). Do you have a path that might be a tempfile and you want to obtain the base name?</p>
+
+
+	<p>Do you currently retrieve the MatchData object, check if it is nil, and get the first matching group if it isn&#8217;t? How about:</p>
+
+
+	<p><pre class='syntax'>
+<span class="ident">require</span> <span class="punct">'</span><span class="string">tempfile</span><span class="punct">'</span>
+<span class="ident">path</span> <span class="punct">=</span> <span class="constant">Tempfile</span><span class="punct">.</span><span class="ident">new</span><span class="punct">('</span><span class="string">foo.bar</span><span class="punct">').</span><span class="ident">path</span>
+	<span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">/var/folders/UZ/UZyZsbVPEWqC7tTXrQBYGU+++TI/-Tmp-/foo.bar.1280.0</span><span class="punct">&quot;</span>
+<span class="ident">path</span><span class="punct">.</span><span class="ident">match</span><span class="punct">('</span><span class="string">/([^/]+)\.[0-9]+\.[0-9]+$</span><span class="punct">').</span><span class="ident">andand</span><span class="punct">[</span><span class="number">1</span><span class="punct">]</span>
+	<span class="punct">=&gt;</span> <span class="punct">&quot;</span><span class="string">foo.bar</span><span class="punct">&quot;</span>
+</pre>With <code>.andand[1]</code>, you extract the group in the regular expression safely: if the expression matches, you get the group. If the expression fails to match, you get nil. Which is what you want, isn&#8217;t it? The contents of the group if the expression matches? Why should you need more than one line for something so simple?</p>
+
+
+	<h3>Enhanced Object#tap</h3>
+
+
+	<p>Ruby 1.9 introduces <a href="http://moonbase.rydia.net/mental/blog/programming/eavesdropping-on-expressions">Object#tap</a>. This library implements Object#tap for Ruby 1.8 <strong>and</strong> enhances it. As in Ruby 1.9, you can call <code>.tap</code> with a block:</p>
+
+
+	<p><pre class='syntax'>
+	<span class="ident">blah</span><span class="punct">.</span><span class="ident">sort</span><span class="punct">.</span><span class="ident">grep</span><span class="punct">(</span> <span class="punct">/</span><span class="regex">foo</span><span class="punct">/</span> <span class="punct">).</span><span class="ident">tap</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">xs</span><span class="punct">|</span> <span class="ident">p</span> <span class="ident">xs</span> <span class="punct">}.</span><span class="ident">map</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">x</span><span class="punct">|</span> <span class="ident">x</span><span class="punct">.</span><span class="ident">blah</span> <span class="punct">}</span>
+</pre> But like its sibling <code>.andand</code>, you can now call <code>.tap</code> with a method as well:</p>
+
+
+	<p><pre class='syntax'>
+	<span class="punct">[</span><span class="number">1</span><span class="punct">,</span> <span class="number">2</span><span class="punct">,</span> <span class="number">3</span><span class="punct">,</span> <span class="number">4</span><span class="punct">,</span> <span class="number">5</span><span class="punct">].</span><span class="ident">tap</span><span class="punct">.</span><span class="ident">pop</span><span class="punct">.</span><span class="ident">map</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">n</span><span class="punct">|</span> <span class="ident">n</span> <span class="punct">*</span> <span class="number">2</span> <span class="punct">}</span>
+    	<span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">2</span><span class="punct">,</span> <span class="number">4</span><span class="punct">,</span> <span class="number">6</span><span class="punct">,</span> <span class="number">8</span><span class="punct">]</span>
+</pre></p>
+
+
+	<h3>Doctor, it hurts when I do that</h3>
+
+
+	<p><em>So don&#8217;t do that!</em></p>
+
+
+	<p>The popular use case for Object#tap is poor man&#8217;s debugging:</p>
+
+
+	<p><pre class='syntax'>
+	<span class="ident">blah</span><span class="punct">.</span><span class="ident">sort</span><span class="punct">.</span><span class="ident">grep</span><span class="punct">(</span> <span class="punct">/</span><span class="regex">foo</span><span class="punct">/</span> <span class="punct">).</span><span class="ident">tap</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">xs</span><span class="punct">|</span> <span class="ident">p</span> <span class="ident">xs</span> <span class="punct">}.</span><span class="ident">map</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">x</span><span class="punct">|</span> <span class="ident">x</span><span class="punct">.</span><span class="ident">blah</span> <span class="punct">}</span>
+</pre>Perhaps you want to remove the tap, you can delete it:</p>
+
+
+	<p><pre class='syntax'>
+	<span class="ident">blah</span><span class="punct">.</span><span class="ident">sort</span><span class="punct">.</span><span class="ident">grep</span><span class="punct">(</span> <span class="punct">/</span><span class="regex">foo</span><span class="punct">/</span> <span class="punct">).</span><span class="ident">map</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">x</span><span class="punct">|</span> <span class="ident">x</span><span class="punct">.</span><span class="ident">blah</span> <span class="punct">}</span>
+</pre>Or, you can change it to <code>.dont</code>:</p>
+
+
+	<p><pre class='syntax'>
+	<span class="ident">blah</span><span class="punct">.</span><span class="ident">sort</span><span class="punct">.</span><span class="ident">grep</span><span class="punct">(</span> <span class="punct">/</span><span class="regex">foo</span><span class="punct">/</span> <span class="punct">).</span><span class="ident">dont</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">xs</span><span class="punct">|</span> <span class="ident">p</span> <span class="ident">xs</span> <span class="punct">}.</span><span class="ident">map</span> <span class="punct">{</span> <span class="punct">|</span><span class="ident">x</span><span class="punct">|</span> <span class="ident">x</span><span class="punct">.</span><span class="ident">blah</span> <span class="punct">}</span>
+</pre>Like <code>.andand</code> and <code>.tap</code>, <code>.dont</code> works with arbitrary methods, not just blocks:</p>
+
+
+	<p><pre class='syntax'>
+	<span class="punct">(</span><span class="number">1</span><span class="punct">..</span><span class="number">10</span><span class="punct">).</span><span class="ident">to_a</span><span class="punct">.</span><span class="ident">reverse!</span>
+	    <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">10</span><span class="punct">,</span> <span class="number">9</span><span class="punct">,</span> <span class="number">8</span><span class="punct">,</span> <span class="number">7</span><span class="punct">,</span> <span class="number">6</span><span class="punct">,</span> <span class="number">5</span><span class="punct">,</span> <span class="number">4</span><span class="punct">,</span> <span class="number">3</span><span class="punct">,</span> <span class="number">2</span><span class="punct">,</span> <span class="number">1</span><span class="punct">]</span>
+	<span class="punct">(</span><span class="number">1</span><span class="punct">..</span><span class="number">10</span><span class="punct">).</span><span class="ident">to_a</span><span class="punct">.</span><span class="ident">dont</span><span class="punct">.</span><span class="ident">reverse!</span>
+	    <span class="punct">=&gt;</span> <span class="punct">[</span><span class="number">1</span><span class="punct">,</span> <span class="number">2</span><span class="punct">,</span> <span class="number">3</span><span class="punct">,</span> <span class="number">4</span><span class="punct">,</span> <span class="number">5</span><span class="punct">,</span> <span class="number">6</span><span class="punct">,</span> <span class="number">7</span><span class="punct">,</span> <span class="number">8</span><span class="punct">,</span> <span class="number">9</span><span class="punct">,</span> <span class="number">10</span><span class="punct">]</span>
+</pre></p>
+
+
+	<h2>A little more background</h2>
+
+
+	<p><a href="http://weblog.raganwald.com/2008/01/objectandand-objectme-in-ruby.html">Object#andand &#38; Object#me in Ruby</a> explains the original motivations, as well as providing links to similar implementations you may want to consider. A few people have pointed out that Object#andand is similar to Haskell&#8217;s Maybe monad. <a href="http://blog.pretheory.com/arch/2008/02/the_maybe_monad_in_ruby.php">The Maybe Monad in Ruby</a> is a good introduction for Ruby programmers.</p>
+
+
+	<h2>That&#8217;s cool, but&hellip;</h2>
+
+
+	<p>No problem, I get that andand isn&#8217;t exactly what you need. Have a look at the <a href="http://ick.rubyforge.org">Invocation Construction Kit</a> or &#8220;Ick.&#8221; The Ick gem <em>generalizes</em> #andand and #tap: Ick provides four useful ways to block-structure your code, the methods #let, #returning, #inside, and #my. Ick also includes four quasi-monadic invocations, #maybe, #please, #tee, and #fork.</p>
+
+
+	<p><a href="http://ick.rubyforge.org">Ick</a> provides abstractions for building your own invocations, so you can branch out and build some of your own abstractions with Ick&#8217;s building blocks.</p>
+
+
+	<h2>How to submit patches</h2>
+
+
+	<p>Read the <a href="http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/">8 steps for fixing other people&#8217;s code</a>.</p>
+
+
+	<p>The trunk repository is <code>svn://rubyforge.org/var/svn/andand/trunk</code> for anonymous access.</p>
+
+
+	<h2>License</h2>
+
+
+	<p>This code is free to use under the terms of the <a href="http://en.wikipedia.org/wiki/MIT_License"><span class="caps">MIT</span> license</a>.</p>
+
+
+	<h2>Shout Out</h2>
+
+
+	<p><a href="http://mcommons.com/">Mobile Commons</a>. Huge.</p>
+
+
+	<h2>Contact</h2>
+
+
+	<p>Comments are welcome. Send an email to <a href="mailto:raganwald+rubyforge@gmail.com">Reginald Braithwaite</a>.</p>
+    <p class="coda">
+      <a href="http://weblog.raganwald.com">Reginald Braithwaite</a>, 12th July 2008<br>
+      Theme extended from <a href="http://rb2js.rubyforge.org/">Paul Battley</a>
+    </p>
+</div>
+
+<!-- insert site tracking codes here, like Google Urchin -->
+
+<div style="visibility: hidden"><script type="text/javascript" src="http://pub44.bravenet.com/counter/code.php?id=404723&usernum=3754613835&cpv=2"></script></div>
+
+</body>
+</html>

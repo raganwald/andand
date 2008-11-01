@@ -1,0 +1,136 @@
+h1. Object#andand
+
+h1. &#x2192; 'andand'
+
+h2. What
+
+_Object#andand_ lets us write:
+
+<pre syntax="ruby">
+@phone = Location.find(:first, ...elided... ).andand.phone
+</pre>And get a _guarded method invocation_ or _safe navigation method_. This snippet performs a @.find@ on the Location class, then sends @.phone@ to the result _if the result is not nil_. If the result is nil, then the expression returns nil without throwing a NoMethodError.
+
+As Dejan Simic "put it":http://rors.org/2008/3/18/andand:
+
+Why would you want to write this:
+
+<pre syntax="ruby">
+entry.at('description') && entry.at('description').inner_text
+</pre>when you can write this:
+
+<pre syntax="ruby">
+entry.at('description').andand.inner_text
+</pre>Why indeed! As a bonus, install andand and you will also receive an enhanced Object#tap method, _at no extra charge_!
+
+h2. Installing
+
+<pre syntax="ruby">sudo gem install andand</pre>
+
+h2. The basics
+
+h3. Object#andand
+
+Ruby programmers are familiar with the two _guarded assignment_ operators @&&=@ and @||=@. The typical use for them is when you have a variable that might be nil. For example:
+
+<pre syntax="ruby">
+first_name &&= @first_name.trim
+@phone ||= '612-777-9311'
+</pre>You are trimming the first name provided it isn’t nil, and you are assigning ‘612-777-9311’ to the phone if it _is_ nil (or false, but that isn’t important right now). The other day we were discussing the guards and we agreed that we wished there was a _guarded method invocation_ operator. Here’s an example of when you would use it:
+
+<pre syntax="ruby">
+@phone = Location.find(:first, ...elided... )&&.phone
+</pre>Meaning, search the location table for the first record matching some criteria, and if you find a location, get its phone. If you don’t, get nil. (Groovy provides this exact functionality, although Groovy uses @?.@ instead of @&&.@) However, @&&.@ won’t work because @&&.@ is not a real Ruby operator.
+
+Object#andand let&rsquo;s us write:
+
+<pre syntax="ruby">
+@phone = Location.find(:first, ...elided... ).andand.phone
+</pre>And get the same effect as:
+
+<pre syntax="ruby">
+@phone = ->(loc){ loc && loc.phone }.call(Location.find(:first, ...elided... ))
+</pre>Note that because you accept any method using Ruby’s method invocation syntax, you can accept methods with parameters and/or blocks:
+
+<pre syntax="ruby">
+list_of_lists.detect { ...elided... }.andand.inject(42) { ...elided ... }
+</pre>Object#andand emphasizes syntactic regularity: the goal was to make an @&&.@ operation that worked like @&&=@. @&&=@ looks just like normal assignment, you can use any expression on the RHS, only the semantics are different. The andand method also works just like a normal method invocation, only the semantics are modified.
+
+h3. Use andand to simplify your regular expression matching and extraction
+
+Do you ever find yourself wanting to extract a single value from a string using a regular expression? For example, Ruby's Tempfile class creates paths to files that end in .pid.n (where pid is your process id and n is some number). Do you have a path that might be a tempfile and you want to obtain the base name?
+
+Do you currently retrieve the MatchData object, check if it is nil, and get the first matching group if it isn't? How about:
+
+<pre syntax="ruby">
+require 'tempfile'
+path = Tempfile.new('foo.bar').path
+	=> "/var/folders/UZ/UZyZsbVPEWqC7tTXrQBYGU+++TI/-Tmp-/foo.bar.1280.0"
+path.match('/([^/]+)\.[0-9]+\.[0-9]+$').andand[1]
+	=> "foo.bar"
+</pre>With @.andand[1]@, you extract the group in the regular expression safely: if the expression matches, you get the group. If the expression fails to match, you get nil. Which is what you want, isn't it? The contents of the group if the expression matches? Why should you need more than one line for something so simple?
+
+h3. Enhanced Object#tap
+
+Ruby 1.9 introduces "Object#tap":http://moonbase.rydia.net/mental/blog/programming/eavesdropping-on-expressions. This library implements Object#tap for Ruby 1.8 *and* enhances it. As in Ruby 1.9, you can call @.tap@ with a block:
+
+<pre syntax="ruby">
+	blah.sort.grep( /foo/ ).tap { |xs| p xs }.map { |x| x.blah }
+</pre> But like its sibling @.andand@, you can now call @.tap@ with a method as well:
+
+<pre syntax="ruby">
+	[1, 2, 3, 4, 5].tap.pop.map { |n| n * 2 }
+    	=> [2, 4, 6, 8]
+</pre>
+
+h3. Doctor, it hurts when I do that
+
+_So don't do that!_
+
+The popular use case for Object#tap is poor man's debugging:
+
+<pre syntax="ruby">
+	blah.sort.grep( /foo/ ).tap { |xs| p xs }.map { |x| x.blah }
+</pre>Perhaps you want to remove the tap, you can delete it:
+
+<pre syntax="ruby">
+	blah.sort.grep( /foo/ ).map { |x| x.blah }
+</pre>Or, you can change it to @.dont@:
+
+<pre syntax="ruby">
+	blah.sort.grep( /foo/ ).dont { |xs| p xs }.map { |x| x.blah }
+</pre>Like @.andand@ and @.tap@, @.dont@ works with arbitrary methods, not just blocks:
+
+<pre syntax="ruby">
+	(1..10).to_a.reverse!
+	    => [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+	(1..10).to_a.dont.reverse!
+	    => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+</pre>
+
+h2. A little more background
+
+"Object#andand & Object#me in Ruby":http://weblog.raganwald.com/2008/01/objectandand-objectme-in-ruby.html explains the original motivations, as well as providing links to similar implementations you may want to consider. A few people have pointed out that Object#andand is similar to Haskell's Maybe monad. "The Maybe Monad in Ruby":http://blog.pretheory.com/arch/2008/02/the_maybe_monad_in_ruby.php is a good introduction for Ruby programmers.
+
+h2. That's cool, but&hellip;
+
+No problem, I get that andand isn't exactly what you need. Have a look at the "Invocation Construction Kit":http://ick.rubyforge.org or "Ick." The Ick gem _generalizes_ #andand and #tap: Ick provides four useful ways to block-structure your code, the methods #let, #returning, #inside, and #my. Ick also includes four quasi-monadic invocations, #maybe, #please, #tee, and #fork.
+
+"Ick":http://ick.rubyforge.org provides abstractions for building your own invocations, so you can branch out and build some of your own abstractions with Ick's building blocks.
+
+h2. How to submit patches
+
+Read the "8 steps for fixing other people's code":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/.
+
+The trunk repository is @svn://rubyforge.org/var/svn/andand/trunk@ for anonymous access.
+
+h2. License
+
+This code is free to use under the terms of the "MIT license":http://en.wikipedia.org/wiki/MIT_License. 
+
+h2. Shout Out
+
+"Mobile Commons":http://mcommons.com/. Huge.
+
+h2. Contact
+
+Comments are welcome. Send an email to "Reginald Braithwaite":mailto:raganwald+rubyforge@gmail.com.

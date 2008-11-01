@@ -1,0 +1,16 @@
+== 1.3.1 2008-07-12
+
+* 1 major enhancement:
+  * Initial release
+* 2 tiny enhancement:
+  * fixed specifications
+* 3 minor enhancement
+  * tap is now a synonym for me
+* 4 minor enhancement
+  * Object#dont
+* 5 bug fix
+  * Plays well with other patch-artists
+* 6 minor enhancement
+  * uses existing BlankSlate class if already defined
+* 7 tiny enhancement
+  * use BasicObject as well
