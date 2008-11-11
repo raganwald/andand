@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.files    = ["History.txt",
 "License.txt",
 "Manifest.txt",
-"README.txt",
+"README.textile",
 "Rakefile",
 "config/hoe.rb",
 "config/requirements.rb",
