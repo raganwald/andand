@@ -1,6 +1,6 @@
 h1. Object#andand
 
-h1. &#x2192; 'andand'
+h1. &#x2192; 'raganwald-andand'
 
 h2. What
 
@@ -24,7 +24,10 @@ entry.at('description').andand.inner_text
 
 h2. Installing
 
-<pre syntax="ruby">sudo gem install andand</pre>
+Update to RubyGems 1.2.0 before proceeding!!
+
+<pre syntax="ruby">sudo gem sources -a http://gems.github.com (you only have to do this once)
+sudo gem install raganwald-andand</pre>
 
 h2. The basics
 
@@ -54,20 +57,6 @@ Object#andand let&rsquo;s us write:
 <pre syntax="ruby">
 list_of_lists.detect { ...elided... }.andand.inject(42) { ...elided ... }
 </pre>Object#andand emphasizes syntactic regularity: the goal was to make an @&&.@ operation that worked like @&&=@. @&&=@ looks just like normal assignment, you can use any expression on the RHS, only the semantics are different. The andand method also works just like a normal method invocation, only the semantics are modified.
-
-h3. Use andand to simplify your regular expression matching and extraction
-
-Do you ever find yourself wanting to extract a single value from a string using a regular expression? For example, Ruby's Tempfile class creates paths to files that end in .pid.n (where pid is your process id and n is some number). Do you have a path that might be a tempfile and you want to obtain the base name?
-
-Do you currently retrieve the MatchData object, check if it is nil, and get the first matching group if it isn't? How about:
-
-<pre syntax="ruby">
-require 'tempfile'
-path = Tempfile.new('foo.bar').path
-	=> "/var/folders/UZ/UZyZsbVPEWqC7tTXrQBYGU+++TI/-Tmp-/foo.bar.1280.0"
-path.match('/([^/]+)\.[0-9]+\.[0-9]+$').andand[1]
-	=> "foo.bar"
-</pre>With @.andand[1]@, you extract the group in the regular expression safely: if the expression matches, you get the group. If the expression fails to match, you get nil. Which is what you want, isn't it? The contents of the group if the expression matches? Why should you need more than one line for something so simple?
 
 h3. Enhanced Object#tap
 
@@ -121,7 +110,7 @@ h2. How to submit patches
 
 Read the "8 steps for fixing other people's code":http://drnicwilliams.com/2007/06/01/8-steps-for-fixing-other-peoples-code/.
 
-The trunk repository is @svn://rubyforge.org/var/svn/andand/trunk@ for anonymous access.
+The public clone url is @git://github.com/raganwald/andand.git@. Fork you very much.
 
 h2. License
 
