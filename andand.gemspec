@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 "License.txt",
 "Manifest.txt",
 "README.textile",
+"README.txt",
 "Rakefile",
 "config/hoe.rb",
 "config/requirements.rb",
@@ -23,16 +24,10 @@ Gem::Specification.new do |s|
 "script/txt2html",
 "setup.rb",
 "tasks/deployment.rake",
-"tasks/environment.rake",
-"tasks/website.rake",
-"website/index.html",
-"website/index.txt",
-"website/javascripts/rounded_corners_lite.inc.js",
-"website/stylesheets/screen.css",
-"website/template.rhtml"]
+"tasks/environment.rake"]
   s.test_files = [
 "test/test_andand.rb",
 "test/test_helper.rb"]
-  s.rdoc_options = ["--main", "README.txt"]
-  s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.txt"]
+  s.rdoc_options = ["--main", "README.textile"]
+  s.extra_rdoc_files = ["History.txt", "Manifest.txt", "README.textile"]
 end
