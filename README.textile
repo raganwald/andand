@@ -29,6 +29,13 @@ Update to RubyGems 1.2.0 before proceeding!!
 <pre syntax="ruby">sudo gem sources -a http://gems.github.com (you only have to do this once)
 sudo gem install raganwald-andand</pre>
 
+Or:
+
+<pre syntax="ruby">git clone git://github.com/raganwald/andand.git
+cd andand
+rake gem
+rake install_gem</pre>
+
 h2. The basics
 
 h3. Object#andand
