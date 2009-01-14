@@ -93,7 +93,7 @@ x.andand.length > 3
 <pre syntax="ruby">
 x = nil
 x.andand { |value| value.length > 3 }
-</pre>.
+</pre>
 
 h3. Enhanced Object#tap
 
