@@ -69,6 +69,32 @@ Object#andand let&rsquo;s us write:
 list_of_lists.detect { ...elided... }.andand.inject(42) { ...elided ... }
 </pre>Object#andand emphasizes syntactic regularity: the goal was to make an @&&.@ operation that worked like @&&=@. @&&=@ looks just like normal assignment, you can use any expression on the RHS, only the semantics are different. The andand method also works just like a normal method invocation, only the semantics are modified.
 
+h3. Block-Structured andand
+
+You can use @andand@ with a block instead of a method:
+
+<pre syntax="ruby">
+@phone =  Location.find(:first, ...elided... ).andand { |location|
+  YellowPages.reverse_lookup(location).phone
+}
+</pre>If the receiver is nil, the block is not executed and @andand@ returns @nil@. If the receiver is not nil, it is passed as a parameter to the block and @andand@ returns the value of the block. This makes it possible to perform conditional evaluation and also to make the scope of the variable really obvious.
+
+h3. Scope
+
+@Object#andand@ only works for one method call. For example, @fu.andand.bar.blitz@ is going to call @nil.blitz@ if @fu@ is @nil@. That's because @fu.andand.bar@ is going to evaluate to @nil@, and then we will call the method @blitz@ on it. In most cases, you want to use @fu.andand.bar.andand.blitz@. If that seems awkward, you might want to reconsider violating the Law of Demeter in an environment where you can't be sure if your receiver is @nil@ or not.
+
+Another example of this (pointed out by Jan Zimmek):
+
+<pre syntax="ruby">
+x = nil
+x.andand.length > 3
+</pre>This results in a @NoMethodError@. Again, @x@ is @nil@, therefore @x.andand.length@ is @nil@, therefore we end up with @nil > 3@ which results in a @NoMethodError@. This can be fixed with @x.andand.length.andand > 3@ as above, or perhaps:
+
+<pre syntax="ruby">
+x = nil
+x.andand { |value| value.length > 3 }
+</pre>.
+
 h3. Enhanced Object#tap
 
 Ruby 1.9 introduces "Object#tap":http://moonbase.rydia.net/mental/blog/programming/eavesdropping-on-expressions. This library implements Object#tap for Ruby 1.8 *and* enhances it. As in Ruby 1.9, you can call @.tap@ with a block:
