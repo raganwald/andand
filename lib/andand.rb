@@ -98,8 +98,8 @@ class Object
   include AndAnd::ObjectGoodies
 end
   
-unless Module.constants.include?('BlankSlate')
-  if Module.constants.include?('BasicObject')
+unless Module.constants.map { |c| c.to_s }.include?('BlankSlate')
+ if Module.constants.map { |c| c.to_s }.include?('BasicObject')
     module AndAnd
       class BlankSlate < BasicObject
       end
