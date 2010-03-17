@@ -1,7 +1,5 @@
 h1. Object#andand
 
-h1. &#x2192; 'raganwald-andand'
-
 h2. Breaking News
 
 @Object#andand@'s functionality is also available as part of the "RewriteRails":http://github.com/raganwald/rewrite_rails plug-in. If you are using Ruby on Rails, please consider using RewriteRails instead of the andand gem.
@@ -157,6 +155,8 @@ h2. Shout Out
 
 "Mobile Commons":http://mcommons.com/. Huge.
 
+Also interesting: "Wicked":http://github.com/wideopenspaces/wicked
+
 h2. Contact
 
-Comments are welcome. Send an email to "Reginald Braithwaite":mailto:raganwald+rubyforge@gmail.com.
+Comments are welcome. Send an email to "Reginald Braithwaite":mailto:raganwald@gmail.com.
