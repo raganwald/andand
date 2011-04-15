@@ -11,7 +11,6 @@ Gem::Specification.new do |s|
 "License.txt",
 "Manifest.txt",
 "README.textile",
-"README.txt",
 "Rakefile",
 "config/hoe.rb",
 "config/requirements.rb",
