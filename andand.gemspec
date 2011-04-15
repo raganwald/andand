@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
   s.email    = "reg@braythwayt.com"
   s.homepage = "hhttp://github.com/raganwald/andand/tree/master"
   s.description = " Maybe Monad in idiomatic Ruby."
-  s.has_rdoc = true
   s.authors  = ["Reg Braithwaite"]
   s.files    = ["History.txt",
 "License.txt",
