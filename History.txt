@@ -1,3 +1,12 @@
+== 1.3.2
+
+* 1 minor enhancement
+  * better docs
+* 2 major enhancement:
+  * Fix 1.9 warning (patch by George MacKerron)
+* 3 major enhancement:
+  * Remove deprecated gemspec information (patch by Anthony Panozzo)
+
 == 1.3.1 2008-07-12
 
 * 1 major enhancement:
