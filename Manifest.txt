@@ -7,7 +7,6 @@ config/hoe.rb
 config/requirements.rb
 lib/andand.rb
 lib/andand/version.rb
-log/debug.log
 script/destroy
 script/generate
 script/txt2html
