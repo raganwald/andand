@@ -1,9 +1,5 @@
 h1. Object#andand
 
-h2. Breaking News
-
-@Object#andand@'s functionality is also available as part of the "RewriteRails":http://github.com/raganwald/rewrite_rails plug-in. If you are using Ruby on Rails, please consider using RewriteRails instead of the andand gem.
-
 h2. What
 
 @Object#andand@ lets us write:
