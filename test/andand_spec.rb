@@ -128,6 +128,6 @@ describe AndAnd, "exception handling" do
     end.should_not raise_error
     lambda do
       foo.andand.hsibborf
-    end.should raise_error
+    end.should raise_error(NoMethodError)
   end
 end
