@@ -26,7 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =end
 
-require File.dirname(__FILE__) + '/test_helper.rb'
+require File.expand_path(File.dirname(__FILE__) + '/test_helper.rb')
 
 require 'andand'
 
@@ -112,6 +112,16 @@ describe AndAnd, "Mixing Me with AndAnd" do
   end
 end
 
+describe 'AndAnd::BlankSlate' do
+  it 'should not respond to Object methods' do
+    nil.andand.to_s.should == nil
+  end
+
+  it 'should not be based on a global BlankSlate object' do
+    nil.andand.respond_to?(:method_on_global_blank_slate).should be_false
+  end
+end
+
 class Foo
   def frobbish
     'fnord'
@@ -128,6 +138,6 @@ describe AndAnd, "exception handling" do
     end.should_not raise_error
     lambda do
       foo.andand.hsibborf
-    end.should raise_error
+    end.should raise_error(NoMethodError)
   end
 end
