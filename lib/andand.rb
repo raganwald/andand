@@ -14,7 +14,7 @@ module AndAnd
   module ObjectGoodies
     
     # Returns nil if its receiver is nil, regardless of whether nil actually handles the
-    # actual method ot what it might return. 
+    # actual method or what it might return. 
     #
     #    'foo'.andand.size => 3
     #    nil.andand.size => nil
