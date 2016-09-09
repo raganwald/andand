@@ -67,7 +67,7 @@ module AndAnd
       end
     end
     
-    unless Object.instance_methods.include?('tap')
+    unless Object.instance_methods.map(&:to_sym).include?(:tap)
       alias :tap :me
     end
     
